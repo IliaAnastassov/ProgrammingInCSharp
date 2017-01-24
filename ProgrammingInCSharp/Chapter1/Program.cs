@@ -16,6 +16,11 @@
 
         public static void Main(string[] args)
         {
+
+        }
+
+        private static void UseTaskWaitAny()
+        {
             Task<int>[] tasks = new Task<int>[3];
 
             tasks[0] = Task.Run(() =>
