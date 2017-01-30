@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -16,7 +17,56 @@
 
         public static void Main(string[] args)
         {
+            var result = DownloadContent().Result;
+            Console.WriteLine("Downloading...");
+            Console.WriteLine(result);
+        }
 
+        private static async Task<string> DownloadContent()
+        {
+            using (var client = new HttpClient())
+            {
+                var result = await client.GetStringAsync("http://www.microsoft.com");
+                return result;
+            }
+        }
+
+        private static void UseParallelBreak()
+        {
+            var counter = 0;
+
+            var result = Parallel.For(0, 1000, (int i, ParallelLoopState loopState) =>
+            {
+                counter++;
+
+                if (i == 500)
+                {
+                    Console.WriteLine($"Breaking loop after {counter}...");
+                    loopState.Break();
+                }
+
+                return;
+            });
+
+            Console.WriteLine(result.IsCompleted);
+            Console.WriteLine(result.LowestBreakIteration);
+        }
+
+        private static void UseParallelFor()
+        {
+            Parallel.For(0, 10, i =>
+            {
+                Console.WriteLine($"A:{i}");
+                Thread.Sleep(1000);
+            });
+
+            var numbers = Enumerable.Range(0, 10);
+
+            Parallel.ForEach(numbers, i =>
+            {
+                Console.WriteLine($"B:{i}");
+                Thread.Sleep(1000);
+            });
         }
 
         private static void UseTaskWaitAny()
@@ -229,7 +279,7 @@
             }).Start();
         }
 
-        public static void ThreadMethod()
+        private static void ThreadMethod()
         {
             for (int i = 0; i < 10; i++)
             {
@@ -238,7 +288,7 @@
             }
         }
 
-        public static void ThreadMethod(object count)
+        private static void ThreadMethod(object count)
         {
             for (int i = 0; i < (int)count; i++)
             {
