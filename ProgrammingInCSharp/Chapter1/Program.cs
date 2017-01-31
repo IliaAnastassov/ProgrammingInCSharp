@@ -17,11 +17,26 @@
 
         public static void Main(string[] args)
         {
-            var result = DownloadContent().Result;
-            Console.WriteLine("Downloading...");
-            Console.WriteLine(result);
+            UseAsParallel();
         }
 
+        private static void UseAsParallel()
+        {
+            var numbers = Enumerable.Range(0, 100);
+
+            var evenNumbers = numbers.AsParallel()
+                                     .AsOrdered()
+                                     .Where(n => n % 2 == 0 && n != 0)
+                                     .AsSequential();
+
+            foreach (var number in evenNumbers.Take(10))
+            {
+                Console.WriteLine($"{number}");
+            }
+        }
+
+
+        //
         private static async Task<string> DownloadContent()
         {
             using (var client = new HttpClient())
