@@ -1,6 +1,7 @@
 ﻿namespace Chapter1
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Linq;
     using System.Net.Http;
     using System.Threading;
@@ -17,7 +18,147 @@
 
         public static void Main(string[] args)
         {
-            UseAsParallel();
+            UseConcurrentDictionary();
+        }
+
+        private static void UseConcurrentDictionary()
+        {
+            var dict = new ConcurrentDictionary<string, int>();
+
+            if (dict.TryAdd("sixty six", 66))
+            {
+                Console.WriteLine("Added");
+            }
+
+            if (dict.TryUpdate("sixty six", 69, 66))
+            {
+                Console.WriteLine("Updated 66 to 69");
+            }
+
+            dict["sixty six"] = 66;
+
+            var result = dict.AddOrUpdate("sixty six", 32, (s, i) => i++);
+            var resultTwo = dict.GetOrAdd("sixty six", 12);
+        }
+
+        private static void UseConcurrentQueue()
+        {
+            var queue = new ConcurrentQueue<int>();
+            queue.Enqueue(47);
+
+            int result;
+            if (queue.TryDequeue(out result))
+            {
+                Console.WriteLine(result);
+            }
+        }
+
+        private static void UseConcurrentStack()
+        {
+            var stack = new ConcurrentStack<int>();
+
+            stack.Push(47);
+
+            int result;
+            if (stack.TryPop(out result))
+            {
+                Console.WriteLine(result);
+            }
+
+            stack.PushRange(new int[] { 2, 3, 4 });
+
+            var nums = new int[2];
+            stack.TryPopRange(nums);
+
+            foreach (var num in nums)
+            {
+                Console.WriteLine(num);
+            }
+        }
+
+        private static void UseConcurrentBag()
+        {
+            var bag = new ConcurrentBag<int>();
+
+            Task.Run(() =>
+            {
+                bag.Add(5);
+                Thread.Sleep(1000);
+                bag.Add(9);
+            });
+
+            Task.Run(() =>
+            {
+                foreach (var number in bag)
+                {
+                    Console.WriteLine(number);
+                }
+            }).Wait();
+        }
+
+        private static void UseBlockingCollection()
+        {
+            var collection = new BlockingCollection<string>();
+
+            var read = Task.Run(() =>
+            {
+                foreach (var item in collection.GetConsumingEnumerable())
+                {
+                    Console.WriteLine(item);
+                }
+            });
+
+            var write = Task.Run(() =>
+            {
+                while (true)
+                {
+                    var input = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        break;
+                    }
+
+                    collection.Add(input);
+                }
+            });
+
+            write.Wait();
+        }
+
+        private static void CatchingAggregateException()
+        {
+            var numbers = Enumerable.Range(0, 20);
+
+            try
+            {
+                var evenNumbers = numbers.AsParallel()
+                                         .Where(n => IsEven(n));
+
+                evenNumbers.ForAll(n => Console.WriteLine(n));
+            }
+            catch (AggregateException e)
+            {
+                Console.WriteLine($"There were {e.InnerExceptions.Count} exceptions");
+            }
+        }
+
+        private static bool IsEven(int number)
+        {
+            if (number % 10 == 0)
+            {
+                throw new ArgumentException("number");
+            }
+
+            return number % 2 == 0;
+        }
+
+        private static void UseForAll()
+        {
+            var numbers = Enumerable.Range(0, 20);
+            var oddNumbers = numbers.AsParallel()
+                                    .Where(n => n % 2 != 0);
+
+            oddNumbers.ForAll(n => Console.WriteLine(n));
         }
 
         private static void UseAsParallel()
@@ -35,8 +176,6 @@
             }
         }
 
-
-        //
         private static async Task<string> DownloadContent()
         {
             using (var client = new HttpClient())
