@@ -1,4 +1,4 @@
-﻿namespace Chapter1
+﻿namespace Chapter1_Objective1
 {
     using System;
     using System.Collections.Concurrent;
@@ -18,7 +18,6 @@
 
         public static void Main(string[] args)
         {
-            UseConcurrentDictionary();
         }
 
         private static void UseConcurrentDictionary()
