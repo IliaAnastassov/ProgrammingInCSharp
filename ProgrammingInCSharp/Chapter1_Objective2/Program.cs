@@ -8,7 +8,108 @@
     {
         static void Main(string[] args)
         {
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
 
+            var task = Task.Run(() =>
+            {
+                while (!tokenSource.IsCancellationRequested)
+                {
+                    Console.WriteLine("*");
+                    Thread.Sleep(500);
+                }
+
+                token.ThrowIfCancellationRequested();
+            }, token).ContinueWith(t =>
+            {
+                t.Exception.Handle(e => true);
+                Console.WriteLine("You have canceled the task");
+            }, TaskContinuationOptions.OnlyOnCanceled);
+
+            Console.WriteLine("Press enter to stop the task");
+            Console.ReadLine();
+
+            tokenSource.Cancel();
+            task.Wait();
+
+            Console.WriteLine("Press enter to stop the application");
+            Console.ReadLine();
+        }
+
+        private static void ThrowOperationCancelledException()
+        {
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
+
+            var task = Task.Run(() =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    Console.WriteLine("*");
+                    Thread.Sleep(500);
+                }
+
+                token.ThrowIfCancellationRequested();
+            }, token);
+
+            try
+            {
+                Console.WriteLine("Press enter to stop the task");
+                Console.ReadLine();
+
+                tokenSource.Cancel();
+                task.Wait();
+            }
+            catch (AggregateException e)
+            {
+                Console.WriteLine($"I like beeeeewbs! {e.InnerExceptions[0].Message}");
+            }
+
+            Console.WriteLine("Press enter to stop the application");
+            Console.ReadLine();
+        }
+
+        private static void UseCancellationToken()
+        {
+            var cancellationSource = new CancellationTokenSource();
+            var token = cancellationSource.Token;
+
+            var task = Task.Run(() =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    Console.WriteLine("*");
+                    Thread.Sleep(500);
+                }
+            }, token);
+
+            Console.WriteLine("Press enter to stop the task");
+            Console.ReadLine();
+            cancellationSource.Cancel();
+
+            Console.WriteLine("Press enter to stop the application");
+            Console.ReadLine();
+        }
+
+        private static void UseInterlocked()
+        {
+            var n = 0;
+
+            var up = Task.Run(() =>
+            {
+                for (int i = 0; i < 1000000; i++)
+                {
+                    Interlocked.Increment(ref n);
+                }
+            });
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                Interlocked.Decrement(ref n);
+            }
+
+            up.Wait();
+            Console.WriteLine(n);
         }
 
         private static void CreateDeadlock()
