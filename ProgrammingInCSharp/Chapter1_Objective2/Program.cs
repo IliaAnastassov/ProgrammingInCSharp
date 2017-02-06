@@ -6,34 +6,23 @@
 
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var tokenSource = new CancellationTokenSource();
-            var token = tokenSource.Token;
+        }
 
-            var task = Task.Run(() =>
+        private static void SetTaskTimeout()
+        {
+            var longRunning = Task.Run(() =>
             {
-                while (!tokenSource.IsCancellationRequested)
-                {
-                    Console.WriteLine("*");
-                    Thread.Sleep(500);
-                }
+                Thread.Sleep(20000);
+            });
 
-                token.ThrowIfCancellationRequested();
-            }, token).ContinueWith(t =>
+            var index = Task.WaitAny(new[] { longRunning }, 5000);
+
+            if (index == 1)
             {
-                t.Exception.Handle(e => true);
-                Console.WriteLine("You have canceled the task");
-            }, TaskContinuationOptions.OnlyOnCanceled);
-
-            Console.WriteLine("Press enter to stop the task");
-            Console.ReadLine();
-
-            tokenSource.Cancel();
-            task.Wait();
-
-            Console.WriteLine("Press enter to stop the application");
-            Console.ReadLine();
+                Console.WriteLine("Task timed out");
+            }
         }
 
         private static void ThrowOperationCancelledException()
