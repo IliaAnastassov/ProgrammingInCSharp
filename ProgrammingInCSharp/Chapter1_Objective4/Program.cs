@@ -9,13 +9,40 @@
 
         }
 
+        private static void UseExceptionRaiser()
+        {
+            var raiser = new ExceptionRaiser();
+
+            raiser.OnChange += (sender, e) => Console.WriteLine("1st subscriber called");
+            raiser.OnChange += (sender, e) => { throw new Exception(); };
+            raiser.OnChange += (sender, e) => Console.WriteLine("3rd subscriber called");
+
+            raiser.Raise();
+        }
+
+        private static void UseCustomEventAccessor()
+        {
+            var user = new CustomEventAccessorUser();
+            user.OnChange += (sender, e) => Console.WriteLine(e.Value);
+
+            user.Raise();
+        }
+
+        private static void CreateAndRaise()
+        {
+            var user = new EventHandlerUser();
+            user.OnChange += (sender, e) => Console.WriteLine($"OnChange raised with value: {e.Value}");
+
+            user.Raise();
+        }
+
         private static void UseActionToExposeEvent()
         {
-            var logger = new ActionUser();
-            logger.OnChange += () => Console.WriteLine("First");
-            logger.OnChange += () => Console.WriteLine("Second");
+            var user = new ActionUser();
+            user.OnChange += () => Console.WriteLine("First");
+            user.OnChange += () => Console.WriteLine("Second");
 
-            logger.Raise();
+            user.Raise();
         }
 
         private static void UseMulticastDelegate()
@@ -75,6 +102,16 @@
         }
     }
 
+    public class MyArgs : EventArgs
+    {
+        public int Value { get; set; }
+
+        public MyArgs(int value)
+        {
+            Value = value;
+        }
+    }
+
     public class ActionUser
     {
         public Action OnChange { get; set; }
@@ -92,6 +129,55 @@
         public void Raise()
         {
             OnChange();
+        }
+    }
+
+    public class EventHandlerUser
+    {
+        public event EventHandler<MyArgs> OnChange = delegate { };
+
+        public void Raise()
+        {
+            OnChange(this, new MyArgs(66));
+        }
+    }
+
+    public class CustomEventAccessorUser
+    {
+        private event EventHandler<MyArgs> onChange = delegate { };
+
+        public event EventHandler<MyArgs> OnChange
+        {
+            add
+            {
+                lock (onChange)
+                {
+                    onChange += value;
+                }
+            }
+
+            remove
+            {
+                lock (onChange)
+                {
+                    onChange -= value;
+                }
+            }
+        }
+
+        public void Raise()
+        {
+            onChange(this, new MyArgs(66));
+        }
+    }
+
+    public class ExceptionRaiser
+    {
+        public event EventHandler OnChange = delegate { };
+
+        public void Raise()
+        {
+            OnChange(this, EventArgs.Empty);
         }
     }
 }
