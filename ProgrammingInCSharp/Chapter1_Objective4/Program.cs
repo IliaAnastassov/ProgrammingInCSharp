@@ -1,12 +1,34 @@
 ﻿namespace Chapter1_Objective4
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class Program
     {
         public static void Main(string[] args)
         {
 
+        }
+
+        private static void UseExceptionHandler()
+        {
+            var handler = new ExceptionHandler();
+
+            handler.OnChange += (sender, e) => Console.WriteLine("1st subscriber called");
+            handler.OnChange += (sender, e) => { throw new Exception(); };
+            handler.OnChange += (sender, e) => { throw new Exception(); };
+            handler.OnChange += (sender, e) => { throw new Exception(); };
+            handler.OnChange += (sender, e) => Console.WriteLine("5th subscriber called");
+
+            try
+            {
+                handler.Raise();
+            }
+            catch (AggregateException ex)
+            {
+                Console.WriteLine($"{ex.InnerExceptions.Count} exceptions handled");
+            }
         }
 
         private static void UseExceptionRaiser()
@@ -178,6 +200,33 @@
         public void Raise()
         {
             OnChange(this, EventArgs.Empty);
+        }
+    }
+
+    public class ExceptionHandler
+    {
+        public event EventHandler OnChange = delegate { };
+
+        public void Raise()
+        {
+            var exceptions = new List<Exception>();
+
+            foreach (var handler in OnChange.GetInvocationList())
+            {
+                try
+                {
+                    handler.DynamicInvoke(this, EventArgs.Empty);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
+            }
         }
     }
 }
