@@ -30,5 +30,10 @@
         }
 
         public int OrderId { get; set; }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("OrderId", OrderId, typeof(int));
+        }
     }
 }

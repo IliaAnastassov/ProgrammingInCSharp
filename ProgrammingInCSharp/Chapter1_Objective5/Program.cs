@@ -4,9 +4,9 @@
     using System.IO;
     using System.Runtime.ExceptionServices;
 
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
 
         }
