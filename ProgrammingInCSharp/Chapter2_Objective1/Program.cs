@@ -9,6 +9,12 @@
 
         }
 
+        private static void UseCustomNullable()
+        {
+            var myNullable = new Nullable<int>(66);
+            Console.WriteLine(myNullable);
+        }
+
         private static void UseNamedParameters()
         {
             MethodWithOptionalParameters(66, optionalParTwo: false);
