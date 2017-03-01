@@ -9,6 +9,26 @@
 
         }
 
+        private static void UseNamedParameters()
+        {
+            MethodWithOptionalParameters(66, optionalParTwo: false);
+        }
+
+        private static void MethodWithOptionalParameters(int number, string optionalParOne = "Some text", bool optionalParTwo = true)
+        {
+            // implementation is not relevant in this case
+        }
+
+        private static void UseWorkDays()
+        {
+            var day = WorkDays.Monday;
+
+            if ((int)day == 1)
+            {
+                Console.WriteLine("Damn, I gotta go to work...");
+            }
+        }
+
         private static void UseDays()
         {
             var weekend = Days.Saturday | Days.Sunday;
@@ -27,5 +47,14 @@
         Thursday = 0x6,
         Friday = 0x7,
         Saturday = 0x8
+    }
+
+    public enum WorkDays : byte
+    {
+        Monday = 1,
+        Tuesday = 2,
+        Wednesday = 3,
+        Thursday = 4,
+        Friday = 5
     }
 }
