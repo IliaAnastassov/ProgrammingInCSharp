@@ -11,7 +11,12 @@
     {
         public static void Main(string[] args)
         {
+        }
 
+        private static void UseExplicitInterfaceIplementedMethod()
+        {
+            var implementer = new Implementation();
+            ((IInterfaceA)implementer).InterfaceMethod();
         }
 
         private static void UseDynamicObject()
