@@ -17,5 +17,10 @@
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        private void SetSecretValue(int value)
+        {
+            secretValue = value;
+        }
     }
 }
