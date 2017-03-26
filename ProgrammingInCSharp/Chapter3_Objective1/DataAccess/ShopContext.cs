@@ -1,6 +1,7 @@
-﻿namespace Chapter3_Objective1
+﻿namespace Chapter3_Objective1.DataAccess
 {
     using System.Data.Entity;
+    using Models;
 
     public class ShopContext : DbContext
     {

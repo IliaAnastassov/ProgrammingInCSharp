@@ -1,8 +1,8 @@
-﻿namespace Chapter3_Objective1
+﻿namespace Chapter3_Objective1.Models
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class Address
+    public class Address : IEntity
     {
         public int Id { get; set; }
 
