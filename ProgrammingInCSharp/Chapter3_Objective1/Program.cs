@@ -2,81 +2,22 @@
 {
     using System;
     using System.Globalization;
-    using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
     using System.Text.RegularExpressions;
     using DataAccess;
     using Models;
     using Validation;
 
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-
-        }
-
-        private static void UseSHA256()
-        {
-            var byteConverter = new UnicodeEncoding();
-            var sha256 = SHA256.Create();
-
-            var data = "My original text";
-            var hashA = sha256.ComputeHash(byteConverter.GetBytes(data));
-
-            data = "My changed text";
-            var hashB = sha256.ComputeHash(byteConverter.GetBytes(data));
-
-            data = "My original text";
-            var hashC = sha256.ComputeHash(byteConverter.GetBytes(data));
-
-            Console.WriteLine(hashA.SequenceEqual(hashB));
-            Console.WriteLine(hashA.SequenceEqual(hashC));
-        }
-
-        private static void EnctyptAndDecryptDataAsync()
-        {
-            var keyProvider = new RSACryptoServiceProvider();
-            var publicKeyXML = keyProvider.ToXmlString(false);
-            var privateKeyXML = keyProvider.ToXmlString(true);
-
-            var byteConverter = new UnicodeEncoding();
-            var dataToEncrypt = byteConverter.GetBytes("Fuck Islam!");
-
-            byte[] encryptedData;
-            using (var rsa = new RSACryptoServiceProvider())
-            {
-                rsa.FromXmlString(publicKeyXML);
-                encryptedData = rsa.Encrypt(dataToEncrypt, false);
-            }
-
-            byte[] decryptedData;
-            using (var rsa = new RSACryptoServiceProvider())
-            {
-                rsa.FromXmlString(privateKeyXML);
-                decryptedData = rsa.Decrypt(encryptedData, false);
-            }
-
-            var decryptedText = byteConverter.GetString(decryptedData);
-            Console.WriteLine(decryptedText);
-        }
-
-        private static void UsePublicAndPrivateKeys()
-        {
-            var rsa = new RSACryptoServiceProvider();
-            var publicKeyXML = rsa.ToXmlString(false);
-            var privateKeyXML = rsa.ToXmlString(true);
-
-            Console.WriteLine(publicKeyXML);
-            Console.WriteLine(privateKeyXML);
         }
 
         private static bool IsJson(string input)
         {
             input = input.Trim();
-            return input.StartsWith("{") && input.EndsWith("}") ||
-                   input.StartsWith("[") && input.EndsWith("]");
+            return (input.StartsWith("{") && input.EndsWith("}")) ||
+                   (input.StartsWith("[") && input.EndsWith("]"));
         }
 
         private static void RemoveExcessWhitespace()
