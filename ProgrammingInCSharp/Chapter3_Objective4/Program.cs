@@ -1,6 +1,7 @@
 ﻿namespace Chapter3_Objective4
 {
     using System;
+    using System.Diagnostics;
     using System.Reflection;
     using System.Threading;
 
@@ -9,6 +10,23 @@
         public static void Main(string[] args)
         {
 
+        }
+
+        private static void UsePersonClass()
+        {
+            var person = new Person
+            {
+                FirstName = "John",
+                LastName = "Smith"
+            };
+
+            Console.WriteLine(person);
+        }
+
+        [Conditional("DEBUG")]
+        private static void Log(string message)
+        {
+            Console.WriteLine(message);
         }
 
         private static void DisableWarnings()
