@@ -3,12 +3,93 @@
     using System;
     using System.IO;
     using System.Security.AccessControl;
+    using System.Text;
 
     public class Program
     {
         public static void Main(string[] args)
         {
 
+        }
+
+        private static void ReadFromFileUsingStreamReader()
+        {
+            var path = @"D:\Temp\file.dat";
+
+            using (var reader = File.OpenText(path))
+            {
+                Console.WriteLine(reader.ReadLine());
+            }
+        }
+
+        private static void ReadFromFileUsingFileStream()
+        {
+            var path = @"D:\Temp\file.dat";
+
+            using (var stream = File.OpenRead(path))
+            {
+                var data = new byte[stream.Length];
+
+                for (int i = 0; i < stream.Length; i++)
+                {
+                    data[i] = (byte)stream.ReadByte();
+                }
+
+                Console.WriteLine(Encoding.UTF8.GetString(data));
+            }
+        }
+
+        private static void WriteTextToFileUsingStreamWriter()
+        {
+            var path = @"D:\Temp\file.dat";
+
+            using (var stream = File.CreateText(path))
+            {
+                var value = "Sample text";
+                stream.Write(value);
+            }
+        }
+
+        private static void WriteDataUsingFileStream()
+        {
+            var path = @"D:\Temp\file.dat";
+
+            using (var stream = File.Create(path))
+            {
+                var value = "Sample data";
+                var data = Encoding.UTF8.GetBytes(value);
+                stream.Write(data, 0, data.Length);
+            }
+        }
+
+        private static void UseCoolPathMethods()
+        {
+            var file = Path.GetRandomFileName();
+            var path = Path.GetTempPath();
+            var fileName = Path.GetTempFileName();
+
+            Console.WriteLine(file);
+            Console.WriteLine(path);
+            Console.WriteLine(fileName);
+        }
+
+        private static void UsePathMethods()
+        {
+            var path = @"D:\Temp\subdir\file.txt";
+
+            Console.WriteLine(Path.GetDirectoryName(path));
+            Console.WriteLine(Path.GetExtension(path));
+            Console.WriteLine(Path.GetFileName(path));
+            Console.WriteLine(Path.GetPathRoot(path));
+        }
+
+        private static void UsePathCombine()
+        {
+            var folder = @"D:\Temp";
+            var file = "text.txt";
+
+            var fullPath = Path.Combine(folder, file);
+            Console.WriteLine(fullPath);
         }
 
         private static void DeleteFileIfExists()
