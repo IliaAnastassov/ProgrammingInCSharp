@@ -9,7 +9,71 @@
     {
         public static void Main(string[] args)
         {
-            MeasurePerformance();
+
+        }
+
+        private static void IncrementCounters()
+        {
+            if (CreatePerformanceCounters())
+            {
+                Console.WriteLine("Created performance counters");
+                Console.WriteLine("Please restart application");
+                return;
+            }
+
+            var totalOperationsCounter = new PerformanceCounter("MyCategory", "# operations executed", false);
+            var operationsPerSecondCounter = new PerformanceCounter("MyCategory", "# operations / sec", false);
+
+            totalOperationsCounter.Increment();
+            operationsPerSecondCounter.Increment();
+        }
+
+        private static bool CreatePerformanceCounters()
+        {
+            if (!PerformanceCounterCategory.Exists("MyCategory"))
+            {
+                var counters = new CounterCreationDataCollection
+                {
+                    new CounterCreationData(
+                        "# operations executed",
+                        "Total number of operations executed",
+                        PerformanceCounterType.NumberOfItems32),
+                    new CounterCreationData(
+                        "# operations / sec",
+                        "Number of operations executed per second",
+                        PerformanceCounterType.RateOfCountsPerSecond32)
+                };
+
+                PerformanceCounterCategory.Create(
+                    "MyCategory",
+                    "Sample category",
+                    PerformanceCounterCategoryType.SingleInstance,
+                    counters);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private static void ReadDataFromPerformanceCounter()
+        {
+            using (var counter = new PerformanceCounter("Memory", "Available bytes"))
+            {
+                var text = "Available memory: ";
+                Console.Write(text);
+
+                do
+                {
+                    while (!Console.KeyAvailable)
+                    {
+                        Console.Write(counter.RawValue);
+                        Console.SetCursorPosition(text.Length, Console.CursorTop);
+                    }
+                } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+
+                Console.WriteLine();
+            }
         }
 
         private static void MeasurePerformance()
