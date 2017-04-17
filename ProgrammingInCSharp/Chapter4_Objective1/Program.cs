@@ -2,6 +2,8 @@
 {
     using System;
     using System.IO;
+    using System.IO.Compression;
+    using System.Linq;
     using System.Security.AccessControl;
     using System.Text;
 
@@ -10,6 +12,71 @@
         public static void Main(string[] args)
         {
 
+        }
+
+        private static string ReadFileContentHandled(string path)
+        {
+            try
+            {
+                return File.ReadAllText(path);
+            }
+            catch (DirectoryNotFoundException) { }
+            catch (FileNotFoundException) { }
+
+            return string.Empty;
+        }
+
+        private static string ReadFileContent(string path)
+        {
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+
+            return string.Empty;
+        }
+
+        private static void UseBufferedStream()
+        {
+            var path = @"D:\Temp\bufferedStream.txt";
+
+            using (var fileStream = File.Create(path))
+            {
+                using (var bufferedStream = new BufferedStream(fileStream))
+                {
+                    using (var writer = new StreamWriter(bufferedStream))
+                    {
+                        writer.WriteLine("My sample text");
+                    }
+                }
+            }
+        }
+
+        private static void CompressDataUsingGZipStream()
+        {
+            var folder = @"D:\Temp";
+            var uncompressedFilePath = Path.Combine(folder, "uncompressed.dat");
+            var compressedFilePath = Path.Combine(folder, "compressed.gz");
+            var dataToCompress = Enumerable.Repeat((byte)'c', 1024 * 1024).ToArray();
+
+            using (var uncompressedStream = File.Create(uncompressedFilePath))
+            {
+                uncompressedStream.Write(dataToCompress, 0, dataToCompress.Length);
+            }
+
+            using (var compressedStream = File.Create(compressedFilePath))
+            {
+                using (var compressionStream = new GZipStream(compressedStream, CompressionMode.Compress))
+                {
+                    compressionStream.Write(dataToCompress, 0, dataToCompress.Length);
+                }
+            }
+
+            var uncompressedFile = new FileInfo(uncompressedFilePath);
+            var compressedFile = new FileInfo(compressedFilePath);
+
+            Console.WriteLine(uncompressedFile.Length);
+            Console.WriteLine(compressedFile.Length);
         }
 
         private static void ReadFromFileUsingStreamReader()
