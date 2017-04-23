@@ -4,14 +4,65 @@
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using System.Net;
+    using System.Net.Http;
     using System.Security.AccessControl;
     using System.Text;
+    using System.Threading.Tasks;
 
     public class Program
     {
         public static void Main(string[] args)
         {
 
+        }
+
+        private static async Task ExecuteMultipleRequestsInParallel()
+        {
+            var client = new HttpClient();
+
+            var google = client.GetStringAsync("http://google.com");
+            var facebook = client.GetStringAsync("http://facebook.com");
+            var amazon = client.GetStringAsync("http://amazon.com");
+
+            await Task.WhenAll(google, facebook, amazon);
+        }
+
+        private static async Task ExecuteMultipleRequests()
+        {
+            var client = new HttpClient();
+
+            var google = await client.GetStringAsync("http://google.com");
+            var facebook = await client.GetStringAsync("http://facebook.com");
+            var amazon = await client.GetStringAsync("http://amazon.com");
+        }
+
+        private static async Task ReadAsyncHttpRequest()
+        {
+            var client = new HttpClient();
+            Console.WriteLine("Starting reading...");
+            var result = await client.GetStringAsync("http://www.facebook.com");
+            Console.WriteLine(result);
+            Console.WriteLine("Ended reading...");
+        }
+
+        private static async Task WriteAsyncToFile()
+        {
+            using (var stream = new FileStream("test.data", FileMode.Create, FileAccess.Write, FileShare.None, 4096, false))
+            {
+                var data = new byte[100000];
+                new Random().NextBytes(data);
+
+                await stream.WriteAsync(data, 0, data.Length);
+            }
+        }
+
+        private static void ExecuteWebRequest(string uri)
+        {
+            var request = WebRequest.Create(uri);
+            var response = request.GetResponse();
+
+            Console.WriteLine(response.Headers);
         }
 
         private static string ReadFileContentHandled(string path)
