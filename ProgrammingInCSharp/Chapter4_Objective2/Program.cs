@@ -5,12 +5,64 @@
     using System.Data.SqlClient;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Transactions;
 
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public async static void Main(string[] args)
         {
+        }
 
+        private static async void UseTransaction()
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings["MyConnection"].ConnectionString;
+
+            using (var transaction = new TransactionScope())
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    var command1 = new SqlCommand("INSERT INTO customers([FirstName], [LastName]) VALUES('Shmuley', 'Boteach'", connection);
+                    var command2 = new SqlCommand("INSERT INTO customers([FirstName], [LastName]) VALUES('Dildo', 'Schwaggins'", connection);
+
+                    await command1.ExecuteNonQueryAsync();
+                    await command2.ExecuteNonQueryAsync();
+                }
+
+                transaction.Complete();
+            }
+        }
+
+        private static async Task InsertRowWithParameterizedQuery()
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings["MyConnection"].ConnectionString;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand("INSERT INTO customers([FirstName], [LastName]) VALUES(@firstName, @lastName", connection);
+                await connection.OpenAsync();
+
+                command.Parameters.AddWithValue("@firstName", "Shmuley");
+                command.Parameters.AddWithValue("@lastName", "Boteach");
+
+                var numberOfInsertedRows = await command.ExecuteNonQueryAsync();
+                Console.WriteLine($"{numberOfInsertedRows} rows inserted");
+            }
+        }
+
+        private static async Task UpdateRows()
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings["MyConnection"].ConnectionString;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand("UPDATE Customers SET FirstName='Shmuley'", connection);
+
+                await connection.OpenAsync();
+                var numberOfRowsUpdated = command.ExecuteNonQueryAsync();
+                Console.WriteLine($"{numberOfRowsUpdated} rows updated");
+            }
         }
 
         private static async Task SelectDataFromTable()
