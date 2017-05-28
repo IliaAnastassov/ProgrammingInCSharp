@@ -3,14 +3,42 @@
     using System;
     using System.Configuration;
     using System.Data.SqlClient;
+    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Transactions;
+    using System.Xml;
 
     public class Program
     {
-        public async static void Main(string[] args)
+        public static void Main(string[] args)
         {
+        }
+
+        private static void UseXmlReader()
+        {
+            using (StreamReader streamReader = new StreamReader(@"../../people.xml"))
+            {
+                using (XmlReader xmlReader = XmlReader.Create(streamReader, new XmlReaderSettings() { IgnoreWhitespace = true }))
+                {
+                    xmlReader.MoveToContent();
+                    xmlReader.ReadStartElement("people");
+
+                    var firstName = xmlReader.GetAttribute("firstname");
+                    var lastName = xmlReader.GetAttribute("lastname");
+
+                    Console.WriteLine($"Person: {firstName} {lastName}");
+
+                    xmlReader.ReadStartElement("person");
+
+                    Console.WriteLine("\tContact Details:");
+
+                    xmlReader.ReadStartElement("contactdetails");
+                    var emailAddress = xmlReader.ReadElementContentAsString();
+
+                    Console.WriteLine($"\t\tEmail address: {emailAddress}");
+                }
+            }
         }
 
         private static async void UseTransaction()
