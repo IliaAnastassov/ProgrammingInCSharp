@@ -4,6 +4,7 @@
     using System.Configuration;
     using System.Data.SqlClient;
     using System.IO;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Transactions;
@@ -13,6 +14,79 @@
     {
         public static void Main(string[] args)
         {
+
+        }
+
+        private static void UseXPathQUery()
+        {
+            var reader = new StreamReader(@"../../people.xml");
+            var xml = reader.ReadToEnd();
+
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+
+            var navigator = doc.CreateNavigator();
+            var xquery = "//people/person[@firstname='Jane']";
+            var iterator = navigator.Select(xquery);
+
+            while (iterator.MoveNext())
+            {
+                var firstname = iterator.Current.GetAttribute("firstname", string.Empty);
+                var lastname = iterator.Current.GetAttribute("lastname", string.Empty);
+                Console.WriteLine($"Name: {firstname} {lastname}");
+            }
+        }
+
+        private static void UseXmlDocument()
+        {
+            var reader = new StreamReader(@"../../people.xml");
+            var xml = reader.ReadToEnd();
+
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+            var nodes = doc.GetElementsByTagName("person");
+
+            foreach (XmlNode node in nodes)
+            {
+                var firstname = node.Attributes["firstname"].Value;
+                var lastname = node.Attributes["lastname"].Value;
+                Console.WriteLine($"Name: {firstname} {lastname}");
+            }
+
+            var newNode = doc.CreateNode(XmlNodeType.Element, "person", string.Empty);
+
+            var firstnameAttribute = doc.CreateAttribute("firstname");
+            firstnameAttribute.Value = "Shmuley";
+
+            var lastnameAttribute = doc.CreateAttribute("lastname");
+            lastnameAttribute.Value = "Boteach";
+
+            newNode.Attributes.Append(firstnameAttribute);
+            newNode.Attributes.Append(lastnameAttribute);
+
+            doc.DocumentElement.AppendChild(newNode);
+            doc.Save(Console.Out);
+        }
+
+        private static void UseXmlWriter()
+        {
+            var stream = new StringWriter();
+
+            using (var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true, Encoding = Encoding.UTF8 }))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("people");
+                writer.WriteStartElement("person");
+                writer.WriteAttributeString("firstname", "Shmuley");
+                writer.WriteAttributeString("lastname", "Boteach");
+                writer.WriteStartElement("contactDetails");
+                writer.WriteElementString("email", "shmuley@shmuleyboteach.com");
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.Flush();
+            }
+
+            Console.WriteLine(stream.ToString());
         }
 
         private static void UseXmlReader()
