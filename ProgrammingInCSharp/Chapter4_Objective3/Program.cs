@@ -1,13 +1,42 @@
 ﻿namespace Chapter4_Objective3
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
 
     public class Program
     {
         public static void Main(string[] args)
         {
-            UseLinqQuery();
+        }
+
+        private static TimeSpan MeasureMethodSyntaxPerformance(int[] numbers)
+        {
+            var timer = new Stopwatch();
+            timer.Start();
+
+            var query = numbers.Where(n => n % 2 == 0);
+            var result = query.ToList();
+
+            timer.Stop();
+
+            return timer.Elapsed;
+        }
+
+        private static TimeSpan MeasureQuerySyntaxPerformance(int[] numbers)
+        {
+            var timer = new Stopwatch();
+            timer.Start();
+
+            var query = from n in numbers
+                        where n % 2 == 0
+                        select n;
+
+            var result = query.ToList();
+
+            timer.Stop();
+
+            return timer.Elapsed;
         }
 
         private static void UseLinqQuery()
