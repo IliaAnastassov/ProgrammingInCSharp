@@ -8,16 +8,32 @@
     {
         public static void Main(string[] args)
         {
+            UseLINQWithMultipleSources();
+
+        }
+
+        private static void UseLINQWithMultipleSources()
+        {
+            int[] data1 = { 1, 2, 3 };
+            int[] data2 = { 4, 5, 6 };
+
+            var result1 = from d1 in data1
+                          from d2 in data2
+                          select d1 * d2;
+
+            var result2 = data1.SelectMany(d1 => data2.Select(d2 => d1 * d2));
+
+            Console.WriteLine(string.Join(", ", result1));
+            Console.WriteLine(string.Join(", ", result2));
         }
 
         private static TimeSpan MeasureMethodSyntaxPerformance(int[] numbers)
         {
             var timer = new Stopwatch();
-            timer.Start();
-
             var query = numbers.Where(n => n % 2 == 0);
-            var result = query.ToList();
 
+            timer.Start();
+            var result = query.ToList();
             timer.Stop();
 
             return timer.Elapsed;
@@ -26,14 +42,12 @@
         private static TimeSpan MeasureQuerySyntaxPerformance(int[] numbers)
         {
             var timer = new Stopwatch();
-            timer.Start();
-
             var query = from n in numbers
                         where n % 2 == 0
                         select n;
 
+            timer.Start();
             var result = query.ToList();
-
             timer.Stop();
 
             return timer.Elapsed;
