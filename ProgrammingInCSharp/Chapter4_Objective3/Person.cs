@@ -8,6 +8,8 @@
 
         public int Age { get; set; }
 
+        public Cart Cart { get; set; }
+
         public override string ToString()
         {
             return $"{FirstName} {LastName}, {Age}";

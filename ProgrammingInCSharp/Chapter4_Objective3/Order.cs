@@ -1,9 +1,9 @@
 ﻿namespace Chapter4_Objective3
 {
-    using System.Collections.Generic;
-
     public class Order
     {
-        public List<OrderLine> OrderLines { get; set; }
+        public int Amount { get; set; }
+
+        public Product Product { get; set; }
     }
 }

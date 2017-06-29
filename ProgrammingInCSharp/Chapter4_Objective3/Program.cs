@@ -1,6 +1,7 @@
 ﻿namespace Chapter4_Objective3
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
 
@@ -8,11 +9,65 @@
     {
         public static void Main(string[] args)
         {
-            UseLINQWithMultipleSources();
-
+            DisplayCartData();
         }
 
-        private static void UseLINQWithMultipleSources()
+        private static IEnumerable<Cart> GetCarts()
+        {
+            return new List<Cart>
+            {
+                new Cart
+                {
+                    Orders = new List<Order>
+                    {
+                        new Order
+                        {
+                            Amount = 5,
+                            Product = new Product { Description = "Coffee", Price = 5.59M }
+                        },
+                        new Order
+                        {
+                            Amount = 12,
+                            Product = new Product { Description = "Tea", Price = 4.57M }
+                        }
+                    }
+                },
+                new Cart
+                {
+                    Orders = new List<Order>
+                    {
+                        new Order
+                        {
+                            Amount = 26,
+                            Product = new Product { Description = "Rice", Price = 1.86M }
+                        },
+                        new Order
+                        {
+                            Amount = 47,
+                            Product = new Product { Description = "Sugar", Price = 0.67M }
+                        },
+                        new Order
+                        {
+                            Amount = 9,
+                            Product = new Product { Description = "Butter", Price = 3.29M }
+                        }
+                    }
+                }
+            };
+        }
+
+        private static void DisplayCartData()
+        {
+            var carts = GetCarts();
+
+            var avgProductPrice = carts.SelectMany(c => c.Orders.Select(o => o.Product)).Average(p => p.Price);
+            var avgProductAmount = carts.SelectMany(c => c.Orders.Select(o => o.Amount)).Average();
+
+            Console.WriteLine($"Average product price: \t\t\t{avgProductPrice:C}");
+            Console.WriteLine($"Average amount of products per order: \t{avgProductAmount}");
+        }
+
+        private static void LinqSelectWithMultipleSources()
         {
             int[] data1 = { 1, 2, 3 };
             int[] data2 = { 4, 5, 6 };
@@ -25,6 +80,17 @@
 
             Console.WriteLine(string.Join(", ", result1));
             Console.WriteLine(string.Join(", ", result2));
+        }
+
+        private static void UseLinqOrderBy()
+        {
+            int[] numbers = { 1, 1, 2, 3, 5, 8, 13, 21, 34 };
+
+            var result = numbers.Where(n => n > 10)
+                                .OrderByDescending(n => n)
+                                .ToList();
+
+            Console.WriteLine(string.Join(", ", result));
         }
 
         private static TimeSpan MeasureMethodSyntaxPerformance(int[] numbers)
