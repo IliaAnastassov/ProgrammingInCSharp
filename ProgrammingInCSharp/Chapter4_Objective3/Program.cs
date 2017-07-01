@@ -9,7 +9,6 @@
     {
         public static void Main(string[] args)
         {
-            DisplayCartData();
         }
 
         private static IEnumerable<Cart> GetCarts()
