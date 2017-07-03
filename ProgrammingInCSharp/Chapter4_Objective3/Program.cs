@@ -11,6 +11,49 @@
         {
         }
 
+        private static void DisplayPagedOrders()
+        {
+            var orders = GetCarts().Union(GetCarts())
+                                   .SelectMany(c => c.Orders)
+                                   .ToList();
+
+            var pageSize = 4;
+            var currentPage = 2;
+
+            var pagedOrders = orders.Skip((currentPage - 1) * pageSize)
+                                    .Take(pageSize);
+
+            foreach (var order in pagedOrders)
+            {
+                Console.WriteLine($"{order.Product.Description}: {order.Amount}");
+            }
+        }
+
+        private static void DisplayItemsSoldCount()
+        {
+            var carts = GetCarts();
+            var methodProductAmounts = from c in carts
+                                       from o in c.Orders
+                                       group o by o.Product into p
+                                       select new
+                                       {
+                                           Product = p.Key,
+                                           Amount = p.Sum(x => x.Amount)
+                                       };
+
+            var queryProductAmounts = carts.SelectMany(c => c.Orders.GroupBy(o => o.Product)
+                                                                    .Select(p => new
+                                                                    {
+                                                                        Product = p.Key,
+                                                                        Amount = p.Sum(x => x.Amount)
+                                                                    }));
+
+            foreach (var productAmount in queryProductAmounts)
+            {
+                Console.WriteLine($"{productAmount.Product.Description}: {productAmount.Amount}");
+            }
+        }
+
         private static IEnumerable<Cart> GetCarts()
         {
             return new List<Cart>
