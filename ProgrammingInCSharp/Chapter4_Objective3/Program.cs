@@ -4,11 +4,26 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Text;
 
     public class Program
     {
         public static void Main(string[] args)
         {
+
+        }
+
+        private static string DecodeWord(string encodedWord)
+        {
+            var decodedWord = new StringBuilder();
+            var charIndexes = encodedWord.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries).Select(s => int.Parse(s) + 'A' - 1);
+
+            foreach (var index in charIndexes)
+            {
+                decodedWord.Append(Char.ConvertFromUtf32(index));
+            }
+
+            return decodedWord.ToString();
         }
 
         private static void DisplayPagedOrders()
