@@ -10,7 +10,12 @@
     {
         public static void Main(string[] args)
         {
+        }
 
+        private static void UseMyLinqExtensions()
+        {
+            var primes = new int[] { 3, 5, 7, 11, 13, 17, 19 };
+            var primesGreaterThanTen = primes.MyWhere(p => p > 10).ToArray();
         }
 
         private static string DecodeWord(string encodedWord)
