@@ -5,11 +5,81 @@
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
+    using System.Xml.Linq;
 
     public class Program
     {
         public static void Main(string[] args)
         {
+            // Write code here
+        }
+
+        private static void CreateXml()
+        {
+            var xml = new XElement(
+                            "Root",
+                            new List<XElement>
+                            {
+                                new XElement("Child1"),
+                                new XElement("Child2"),
+                                new XElement("Child3")
+                            },
+                            new XAttribute("MyAttribute", 66));
+
+            xml.Save("test.xml");
+        }
+
+        private static void UseLinqToXml()
+        {
+            var xml = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+                            <people>
+                                <person firstname=""john"" lastname=""doe"">
+                                    <contactdetails>
+                                        <emailaddress>john@unknown.com</emailaddress>
+                                    </contactdetails>
+                                </person>
+                                <person firstname=""jane"" lastname=""doe"">
+                                    <contactdetails>
+                                        <emailaddress>jane@unknown.com</emailaddress>
+                                        <phonenumber>001122334455</phonenumber>
+                                    </contactdetails>
+                                </person>
+                            </people>";
+
+            var doc = XDocument.Parse(xml);
+
+            var personNames = from p in doc.Descendants("person")
+                              select p.Attribute("firstname").Value
+                                     + " " + p.Attribute("lastname").Value;
+
+            var namesOfPersons = doc.Descendants("person")
+                                    .Select(p => p.Attribute("firstname").Value
+                                                + " " + p.Attribute("lastname").Value);
+
+            foreach (var name in personNames)
+            {
+                Console.WriteLine(name);
+            }
+
+            Console.WriteLine();
+
+            var personsWithPhones = from p in doc.Descendants("person")
+                                    where p.Descendants("phonenumber").Any()
+                                    let name = p.Attribute("firstname").Value
+                                               + " " + p.Attribute("lastname").Value
+                                    orderby name
+                                    select name;
+
+            var personsHavingPhones = doc.Descendants("person")
+                                         .Where(p => p.Descendants("phonenumber").Any())
+                                         .Select(p => p.Attribute("firstname").Value
+                                                      + " " + p.Attribute("lastname").Value)
+                                         .OrderBy(n => n);
+
+            foreach (var name in personsHavingPhones)
+            {
+                Console.WriteLine(name);
+            }
         }
 
         private static void UseMyLinqExtensions()
