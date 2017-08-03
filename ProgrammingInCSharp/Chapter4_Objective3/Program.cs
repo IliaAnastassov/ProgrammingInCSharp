@@ -14,6 +14,41 @@
             // Write code here
         }
 
+        private static void XmlFunctionalCreation()
+        {
+            var xml = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+                            <people>
+                                <person firstname=""john"" lastname=""doe"">
+                                    <contactdetails>
+                                        <emailaddress>john@unknown.com</emailaddress>
+                                    </contactdetails>
+                                </person>
+                                <person firstname=""jane"" lastname=""doe"">
+                                    <contactdetails>
+                                        <emailaddress>jane@unknown.com</emailaddress>
+                                        <phonenumber>001122334455</phonenumber>
+                                    </contactdetails>
+                                </person>
+                            </people>";
+
+            var doc = XElement.Parse(xml);
+
+            var transformed = new XElement("people",
+                from p in doc.Descendants("person")
+                let name = p.Attribute("firstname").Value + " " + p.Attribute("lastname").Value
+                let contactDetails = p.Element("contactdetails")
+                select new XElement("Person",
+                    new XAttribute("ismale", name.Contains("john")),
+                    p.Attributes(),
+                    new XElement("contactdetails",
+                        contactDetails.Element("emailaddress"),
+                        contactDetails.Element("phonenumber")
+                            ?? new XElement("phonenumber", "001122334455")
+                            )));
+
+            Console.WriteLine(transformed);
+        }
+
         private static void CreateXml()
         {
             var xml = new XElement(
@@ -225,7 +260,18 @@
             Console.WriteLine(string.Join(", ", result));
         }
 
-        private static TimeSpan MeasureMethodSyntaxPerformance(int[] numbers)
+        private static void LinqQueryVsMethodSyntax()
+        {
+            int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+            var querySyntaxPerformace = MeasureQuerySyntaxPerformance(numbers);
+            var methodSyntaxPerformance = MeasureMethodSyntaxPerformance(numbers);
+
+            Console.WriteLine($"Query Syntax: \t{querySyntaxPerformace}");
+            Console.WriteLine($"Method Syntax: \t{methodSyntaxPerformance}");
+        }
+
+        private static TimeSpan MeasureMethodSyntaxPerformance(IEnumerable<int> numbers)
         {
             var timer = new Stopwatch();
             var query = numbers.Where(n => n % 2 == 0);
@@ -237,7 +283,7 @@
             return timer.Elapsed;
         }
 
-        private static TimeSpan MeasureQuerySyntaxPerformance(int[] numbers)
+        private static TimeSpan MeasureQuerySyntaxPerformance(IEnumerable<int> numbers)
         {
             var timer = new Stopwatch();
             var query = from n in numbers
