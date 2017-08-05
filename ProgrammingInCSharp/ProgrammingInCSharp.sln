@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter1_Objective1", "Chapter1_Objective1\Chapter1_Objective1.csproj", "{7DA1CB65-A886-493A-A915-7431D9E56864}"
 EndProject
@@ -46,6 +46,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter4_Objective2", "Chapter4_Objective2\Chapter4_Objective2.csproj", "{AA60D942-7D26-4A3B-AF59-2B5DAB3A76FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter4_Objective3", "Chapter4_Objective3\Chapter4_Objective3.csproj", "{BB799FFB-2384-45C7-9BB2-480ADB2D1D63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chapter4_Objective4", "Chapter4_Objective4\Chapter4_Objective4.csproj", "{86EE8949-9F56-4A98-AFB6-860D577B39D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -164,6 +166,12 @@ Global
 		{BB799FFB-2384-45C7-9BB2-480ADB2D1D63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB799FFB-2384-45C7-9BB2-480ADB2D1D63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB799FFB-2384-45C7-9BB2-480ADB2D1D63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86EE8949-9F56-4A98-AFB6-860D577B39D3}.Debug_Local|Any CPU.ActiveCfg = Debug|Any CPU
+		{86EE8949-9F56-4A98-AFB6-860D577B39D3}.Debug_Local|Any CPU.Build.0 = Debug|Any CPU
+		{86EE8949-9F56-4A98-AFB6-860D577B39D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86EE8949-9F56-4A98-AFB6-860D577B39D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86EE8949-9F56-4A98-AFB6-860D577B39D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86EE8949-9F56-4A98-AFB6-860D577B39D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -187,5 +195,6 @@ Global
 		{8E03975A-75E6-4A7A-BB9E-8EA8D83A7551} = {42B8152B-7CB4-4AF4-9841-8013E889DA9C}
 		{AA60D942-7D26-4A3B-AF59-2B5DAB3A76FB} = {42B8152B-7CB4-4AF4-9841-8013E889DA9C}
 		{BB799FFB-2384-45C7-9BB2-480ADB2D1D63} = {42B8152B-7CB4-4AF4-9841-8013E889DA9C}
+		{86EE8949-9F56-4A98-AFB6-860D577B39D3} = {42B8152B-7CB4-4AF4-9841-8013E889DA9C}
 	EndGlobalSection
 EndGlobal
