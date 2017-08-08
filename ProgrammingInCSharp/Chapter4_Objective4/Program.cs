@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 
 namespace Chapter4_Objective4
@@ -9,7 +10,30 @@ namespace Chapter4_Objective4
     {
         static void Main(string[] args)
         {
-            UseXmlSerializationAttributes();
+
+        }
+
+        private static void UseBinarySerialization()
+        {
+            var randomGuy = new Person
+            {
+                FirstName = "Shmuley",
+                LastName = "Boteach",
+                Age = 66
+            };
+
+            var formatter = new BinaryFormatter();
+
+            using (var stream = new FileStream("shmuley.bin", FileMode.Create))
+            {
+                formatter.Serialize(stream, randomGuy);
+            }
+
+            using (var stream = new FileStream("shmuley.bin", FileMode.Open))
+            {
+                var person = formatter.Deserialize(stream);
+                Console.WriteLine(person);
+            }
         }
 
         private static void UseXmlSerializationAttributes()

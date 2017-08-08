@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chapter4_Objective4
 {
@@ -14,5 +10,10 @@ namespace Chapter4_Objective4
         public string LastName { get; set; }
 
         public int Age { get; set; }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}, {Age}";
+        }
     }
 }
