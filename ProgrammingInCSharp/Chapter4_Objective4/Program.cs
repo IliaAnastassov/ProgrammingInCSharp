@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Json;
 using System.Xml.Serialization;
 
 namespace Chapter4_Objective4
@@ -10,7 +12,54 @@ namespace Chapter4_Objective4
     {
         static void Main(string[] args)
         {
-            
+
+        }
+
+        private static void UseJsonSerializer()
+        {
+            var person = new PersonJson
+            {
+                Id = 66,
+                FirstName = "Shmuley",
+                LastName = "Boteach"
+            };
+
+            using (var stream = new MemoryStream())
+            {
+                var serializer = new DataContractJsonSerializer(typeof(PersonJson));
+                serializer.WriteObject(stream, person);
+
+                stream.Position = 0;
+                var reader = new StreamReader(stream);
+                Console.WriteLine(reader.ReadToEnd());
+
+                stream.Position = 0;
+                var result = serializer.ReadObject(stream);
+            }
+        }
+
+        private static void UseDataContract()
+        {
+            var person = new PersonDataContract
+            {
+                FirstName = "Shmuley",
+                LastName = "Boteach",
+                Age = 66
+            };
+
+            using (var stream = new FileStream("data.xml", FileMode.Create))
+            {
+                var serializer = new DataContractSerializer(typeof(PersonDataContract));
+                serializer.WriteObject(stream, person);
+            }
+
+            using (var stream = new FileStream("data.xml", FileMode.Open))
+            {
+                var serializer = new DataContractSerializer(typeof(PersonDataContract));
+                var shmuley = serializer.ReadObject(stream) as PersonDataContract;
+
+                Console.WriteLine($"{shmuley.FirstName} {shmuley.LastName} {shmuley.Age}");
+            }
         }
 
         private static void UseBinarySerialization()
