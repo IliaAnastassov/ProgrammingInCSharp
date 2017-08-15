@@ -10,7 +10,7 @@ namespace Chapter4_Objective4
     {
         static void Main(string[] args)
         {
-
+            
         }
 
         private static void UseBinarySerialization()

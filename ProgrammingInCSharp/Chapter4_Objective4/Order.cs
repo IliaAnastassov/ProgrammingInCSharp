@@ -7,11 +7,24 @@ namespace Chapter4_Objective4
     [Serializable]
     public class Order
     {
+        [NonSerialized]
+        private bool isDirty;
+
         [XmlAttribute]
         public int ID { get; set; }
 
         [XmlIgnore]
-        public bool IsDirty { get; set; }
+        public bool IsDirty
+        {
+            get
+            {
+                return isDirty;
+            }
+            set
+            {
+                isDirty = value;
+            }
+        }
 
         [XmlArray("Lines")]
         [XmlArrayItem("OrderLine")]
