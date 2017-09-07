@@ -1,6 +1,6 @@
 ﻿namespace Chapter4_Objective5
 {
-    class Person
+    public class Person
     {
         public int Id { get; set; }
 

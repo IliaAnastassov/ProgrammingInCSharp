@@ -8,7 +8,26 @@ namespace Chapter4_Objective5
     {
         static void Main(string[] args)
         {
+            UsePeopleCollection();
+        }
 
+        private static void UsePeopleCollection()
+        {
+            var people = new PeopleCollection();
+            people.Add(new Person { Id = 1, Name = "Peter" });
+            people.Add(new Person { Id = 2, Name = "John" });
+            people.Add(new Person { Id = 3, Name = "Jane" });
+            people.Add(new Person { Id = 4, Name = "Anna" });
+
+            Console.WriteLine(people);
+
+            people.RemoveById(2);
+
+            Console.WriteLine(people);
+
+            people.RemoveById(1, 3);
+
+            Console.WriteLine(people);
         }
 
         private static void UseStack()
