@@ -8,16 +8,17 @@ namespace Chapter4_Objective5
     {
         static void Main(string[] args)
         {
-            UsePeopleCollection();
         }
 
         private static void UsePeopleCollection()
         {
-            var people = new PeopleCollection();
-            people.Add(new Person { Id = 1, Name = "Peter" });
-            people.Add(new Person { Id = 2, Name = "John" });
-            people.Add(new Person { Id = 3, Name = "Jane" });
-            people.Add(new Person { Id = 4, Name = "Anna" });
+            var people = new PeopleCollection
+            {
+                new Person { Id = 1, Name = "Peter" },
+                new Person { Id = 2, Name = "John" },
+                new Person { Id = 3, Name = "Jane" },
+                new Person { Id = 4, Name = "Anna" }
+            };
 
             Console.WriteLine(people);
 
